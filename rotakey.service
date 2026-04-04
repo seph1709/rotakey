@@ -1,0 +1,61 @@
+# RotaKey v6 — systemd service unit
+#
+# Install:
+#   sudo cp rotakey.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable rotakey
+#   sudo systemctl start rotakey
+#
+# Check status / logs:
+#   sudo systemctl status rotakey
+#   sudo journalctl -u rotakey -f
+#
+# Reload config (no restart needed — proxy hot-reloads rotakey.yaml):
+#   sudo systemctl kill -s HUP rotakey   # optional; proxy reloads on TTL anyway
+#
+# Environment file:
+#   Copy .env.example to /etc/rotakey/rotakey.env and fill in your values.
+#   sudo mkdir -p /etc/rotakey
+#   sudo cp .env.example /etc/rotakey/rotakey.env
+#   sudo chmod 600 /etc/rotakey/rotakey.env
+#   sudo chown root:root /etc/rotakey/rotakey.env
+
+[Unit]
+Description=RotaKey API Key Rotation Proxy v6
+Documentation=https://github.com/yourorg/rotakey
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rotakey
+Group=rotakey
+
+# Working directory — put proxy.py and rotakey.yaml here
+WorkingDirectory=/opt/rotakey
+
+# Load secrets from a protected env file (never commit this file)
+EnvironmentFile=-/etc/rotakey/rotakey.env
+
+ExecStart=/usr/bin/python3 /opt/rotakey/proxy.py
+
+# Restart on crash; wait 5 s between retries; give up after 3 quick crashes
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+StartLimitIntervalSec=30
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/rotakey      # allow state + log writes in working dir
+
+# Graceful shutdown — give the proxy 10 s to finish in-flight requests
+TimeoutStopSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

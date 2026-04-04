@@ -1,0 +1,19 @@
+# RotaKey v6 — pinned runtime dependencies
+# Install: pip install -r requirements.txt
+#
+# To update pins:
+#   pip install -U fastapi uvicorn[standard] httpx pyyaml
+#   pip freeze | grep -E "^(fastapi|uvicorn|httpx|PyYAML|anyio|starlette|h11)" > requirements.txt
+
+fastapi==0.115.12
+uvicorn==0.34.3
+httpx==0.28.1
+PyYAML==6.0.2
+# transitive deps pinned for reproducibility
+starlette==0.46.2
+anyio==4.9.0
+h11==0.16.0
+idna==3.10
+certifi==2025.4.26
+httpcore==1.0.9
+sniffio==1.3.1

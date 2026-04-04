@@ -1,0 +1,18 @@
+# prometheus.yml — example scrape config for RotaKey
+# Place next to docker-compose.yml and uncomment the prometheus service there.
+#
+# Grafana dashboard query examples:
+#   Request rate:      rate(rotakey_requests_total[5m])
+#   Error rate:        rate(rotakey_429_total[5m])
+#   p95 latency:       histogram_quantile(0.95, rotakey_request_duration_ms_sum / rotakey_request_duration_ms_count)
+#   Active keys:       rotakey_keys_active
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: rotakey
+    static_configs:
+      - targets: ["rotakey:8765"]   # use "localhost:8765" if not in Docker
+    metrics_path: /metrics

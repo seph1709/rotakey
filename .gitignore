@@ -1,0 +1,28 @@
+# ── Secrets — NEVER commit these ─────────────────────────────
+.env
+rotakey.yaml         # only if it contains real API keys
+rotakey_state.json
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+*.log.*
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ── Docker data volumes ───────────────────────────────────────
+data/
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

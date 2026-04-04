@@ -1,0 +1,100 @@
+# ============================================================
+#  RotaKey v6 — Central Configuration
+#  All non-secret settings live here.
+#
+#  KEYS:  Prefer env vars over hardcoding here.
+#         See .env.example for ROTAKEY_KEYS_<PROVIDER>=...
+#         If you must put keys here, run: chmod 600 rotakey.yaml
+#         and add rotakey.yaml to .gitignore.
+#
+#  DO NOT commit this file if it contains real API keys.
+# ============================================================
+
+# ── Server ──────────────────────────────────────────────────
+server:
+  host:
+    "127.0.0.1" # Never expose to network; localhost only.
+    # In Docker, set to "0.0.0.0" (container
+    # port binding handles network isolation).
+  port: 8765 # ROTAKEY_PORT env var overrides this.
+  log_file: "rotakey.log"
+  log_level: "INFO" # DEBUG | INFO | WARNING | ERROR
+  log_format:
+    "text" # "text" (colored console) | "json" (structured,
+    # recommended for Datadog / Loki / CloudWatch)
+
+# ── HTTP client tuning ───────────────────────────────────────
+http_client:
+  timeout_connect: 10.0
+  timeout_read: 120.0
+  timeout_write: 30.0
+  timeout_pool: 5.0
+  max_connections: 20
+  max_keepalive: 10
+
+# ── Rate-limit / backoff ─────────────────────────────────────
+rate_limit:
+  state_file: "rotakey_state.json"
+  recovery_window: 300
+  backoff_schedule: [60, 120, 300, 600]
+  invalid_key_cooldown: 86400
+  keys_cache_ttl: 30
+
+# ── Global model translation map ─────────────────────────────
+model_map: {}
+# model_map:
+#   "claude-sonnet-4":
+#     anthropic:  "claude-sonnet-4-20250514"
+#     openrouter: "anthropic/claude-sonnet-4"
+#   "gpt-4o":
+#     openai:     "gpt-4o-2024-08-06"
+#     openrouter: "openai/gpt-4o"
+
+# ── Providers ────────────────────────────────────────────────
+providers:
+  openrouter:
+    base_url: "https://openrouter.ai/api"
+    prefix: "/openrouter"
+    key_header: "Authorization"
+    key_prefix: "Bearer "
+    model_fallback:
+      trigger_statuses: [429, 500, 502, 503, 404]
+      chain:
+        - "minimax/minimax-m2.5:free"
+
+  anthropic:
+    base_url: "https://api.anthropic.com"
+    prefix: "/anthropic"
+    key_header: "x-api-key"
+    extra_headers:
+      anthropic-version: "2023-06-01"
+    model_fallback:
+      trigger_statuses: [429, 500, 502, 503]
+      chain: []
+
+  openai:
+    base_url: "https://api.openai.com"
+    prefix: "/openai"
+    key_header: "Authorization"
+    key_prefix: "Bearer "
+    model_fallback:
+      trigger_statuses: [429, 500, 502, 503]
+      chain: []
+
+  gemini:
+    base_url: "https://generativelanguage.googleapis.com"
+    prefix: "/gemini"
+    key_header: "x-goog-api-key"
+    model_fallback:
+      trigger_statuses: [429, 500, 502, 503]
+      chain: []
+
+# ── API Keys ─────────────────────────────────────────────────
+# RECOMMENDATION: Use environment variables instead.
+# Set ROTAKEY_KEYS_<PROVIDER>=key1,key2  or ROTAKEY_KEY_<PROVIDER>_1=key1
+# See .env.example for details.
+keys:
+  anthropic: []
+  openai: []
+  gemini: []
+  openrouter: []

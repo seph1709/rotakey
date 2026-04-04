@@ -1,0 +1,58 @@
+# RotaKey v6 — Docker Compose
+#
+# Quickstart:
+#   cp rotakey.yaml.example rotakey.yaml   # then add your API keys
+#   docker compose up -d
+#
+# With env-var keys (no keys in yaml):
+#   ROTAKEY_KEYS_OPENROUTER=sk-or-v1-... docker compose up -d
+
+services:
+  rotakey:
+    build: .
+    image: rotakey:latest
+    container_name: rotakey
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:8765:8765"    # localhost only — safe default
+
+    volumes:
+      # Mount your config (read-only — the proxy only reads it)
+      - ./rotakey.yaml:/app/rotakey.yaml:ro
+      # State and logs are written here on the host
+      - ./data:/app/data
+
+    environment:
+      # Port override (must match 'ports' above if changed)
+      - ROTAKEY_PORT=8765
+      # Inbound auth token — set this before exposing to a team
+      - ROTAKEY_TOKEN=${ROTAKEY_TOKEN:-}
+      # Keys from environment (preferred over putting keys in yaml)
+      - ROTAKEY_KEYS_OPENROUTER=${ROTAKEY_KEYS_OPENROUTER:-}
+      - ROTAKEY_KEYS_ANTHROPIC=${ROTAKEY_KEYS_ANTHROPIC:-}
+      - ROTAKEY_KEYS_OPENAI=${ROTAKEY_KEYS_OPENAI:-}
+      - ROTAKEY_KEYS_GEMINI=${ROTAKEY_KEYS_GEMINI:-}
+
+    # Write container logs as JSON (pairs with log_format: json in rotakey.yaml)
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+    healthcheck:
+      test: ["CMD", "python3", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Prometheus scraper
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
