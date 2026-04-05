@@ -114,8 +114,9 @@ jobs:
             gemini: []
             openrouter: []
           EOF
+          chmod 600 /tmp/rotakey-ci.yaml
           docker run -d --name rotakey-ci \
-            -v /tmp/rotakey-ci.yaml:/app/rotakey.yaml:ro \
+            -v /tmp/rotakey-ci.yaml:/app/rotakey.yaml \
             rotakey:ci
           sleep 8
           docker logs rotakey-ci
