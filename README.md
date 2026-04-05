@@ -111,6 +111,87 @@ export OPENAI_API_KEY=rotakey    # or your ROTAKEY_TOKEN value
 
 ---
 
+## Integration Examples
+
+### OpenClaw
+
+[OpenClaw](https://openclaw.ai) supports RotaKey natively. Add a `rotakey` provider in your `openclaw.json`:
+
+```json
+{
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "rotakey": {
+        "baseUrl": "http://localhost:8765/v1",
+        "apiKey": "rotakey",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "rotakey/openrouter/qwen/qwen3-235b-a22b:free",
+            "name": "qwen",
+            "api": "openai-completions",
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "rotakey/openrouter/minimax/minimax-m2.5:free",
+            "name": "minimax",
+            "api": "openai-completions",
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "env": {
+    "OPENAI_BASE_URL": "http://localhost:8765/v1",
+    "OPENAI_API_KEY": "rotakey"
+  }
+}
+```
+
+Model IDs follow the format `rotakey/openrouter/<model-id>` — RotaKey strips the prefix and forwards to the correct provider.
+
+---
+
+### Python (openai SDK)
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8765/openrouter/v1",
+    api_key="rotakey",
+)
+
+response = client.chat.completions.create(
+    model="qwen/qwen3-235b-a22b:free",
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(response.choices[0].message.content)
+```
+
+### Node.js (openai SDK)
+
+```js
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "http://localhost:8765/openrouter/v1",
+  apiKey: "rotakey",
+});
+
+const response = await client.chat.completions.create({
+  model: "qwen/qwen3-235b-a22b:free",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+console.log(response.choices[0].message.content);
+```
+
+---
+
 ## API Keys
 
 Never hardcode keys in `rotakey.yaml`. Use environment variables:
