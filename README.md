@@ -15,16 +15,12 @@
 
 RotaKey sits between your app and upstream AI providers. When a key hits a rate limit, it automatically tries the next model, then the next key, then the next provider — **transparently, with zero changes to your client code.**
 
-```
-Your app  →  http://localhost:8765/openrouter/v1/chat/completions
-                          ↓
-                      RotaKey
-                ┌──────────────────────┐
-                │  key-1 / model-a  → 429 → try model-b
-                │  key-1 / model-b  → 429 → rotate key
-                │  key-2 / model-a  → 200 ✓
-                └──────────────────────┘
-```
+| Step | What happens |
+|------|-------------|
+| Your app sends a request | `POST http://localhost:8765/openrouter/v1/chat/completions` |
+| key-1 / model-a hits 429 | RotaKey tries next model |
+| key-1 / model-b hits 429 | RotaKey rotates to next key |
+| key-2 / model-a returns 200 | Request succeeds — your app gets the response |
 
 </div>
 
