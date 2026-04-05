@@ -9,14 +9,13 @@ The FastAPI test client drives requests; state is fresh per test.
 """
 
 import json
-import os
 import sys
 import time
 from pathlib import Path
 
+import httpx
 import pytest
 import respx
-import httpx
 from fastapi.testclient import TestClient
 
 # ── Insert project root so proxy module is importable ────────────────────────
@@ -81,8 +80,9 @@ MINIMAL_CFG = {
 @pytest.fixture(autouse=True)
 def _reset_proxy_state():
     """Reset all in-memory state and create a fresh http client between tests."""
-    import proxy as p
     import httpx as hx
+
+    import proxy as p
 
     p._rl_state      = {}
     p._key_dead      = {}

@@ -58,7 +58,6 @@ import logging
 import logging.handlers
 import os
 import re
-import random
 import socket
 import stat
 import sys
@@ -69,12 +68,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
+import uvicorn
 import yaml
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
-import uvicorn
-
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
@@ -1563,7 +1561,7 @@ async def proxy(path: str, request: Request):
         log.error(
             f"[#{req_id}] ⚠ EXHAUSTED [{provider_name.upper()}] "
             f"all models + keys rate-limited (HTTP 429)"
-            + (f"\n           action : ⤳ SPILL to next provider in chain" if has_next
+            + ("\n           action : ⤳ SPILL to next provider in chain" if has_next
                else "\n           action : no more providers — returning 429 to client")
         )
 
@@ -1745,6 +1743,7 @@ if __name__ == "__main__":
     # ── --dry-run: validate + connectivity probe every provider's base_url ─────
     if "--dry-run" in sys.argv:
         import asyncio as _asyncio
+
         import httpx as _httpx
 
         print("\n  RotaKey dry-run\n  " + "─" * 40)
@@ -1908,7 +1907,7 @@ if __name__ == "__main__":
     )
     active_providers = len([p for p in all_keys if all_keys.get(p)])
 
-    auth_val   = (f"ENABLED  ·  ROTAKEY_TOKEN is set" if _ROTAKEY_TOKEN
+    auth_val   = ("ENABLED  ·  ROTAKEY_TOKEN is set" if _ROTAKEY_TOKEN
                   else "DISABLED  —  set ROTAKEY_TOKEN env var")
     auth_color = YL if _ROTAKEY_TOKEN else RD
 
