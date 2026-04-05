@@ -111,6 +111,45 @@ export OPENAI_API_KEY=rotakey    # or your ROTAKEY_TOKEN value
 
 ---
 
+## Quick Test
+
+Before integrating, verify RotaKey is working with a real request.
+
+### Postman
+
+| Field | Value |
+|---|---|
+| Method | `POST` |
+| URL | `http://localhost:8765/openrouter/v1/chat/completions` |
+| Header | `Content-Type: application/json` |
+| Header | `Authorization: Bearer rotakey` |
+
+**Body (raw JSON):**
+```json
+{
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "messages": [
+    { "role": "user", "content": "Say hello" }
+  ]
+}
+```
+
+### curl
+
+```bash
+curl -X POST http://localhost:8765/openrouter/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer rotakey" \
+  -d '{
+    "model": "nvidia/nemotron-3-super-120b-a12b:free",
+    "messages": [{ "role": "user", "content": "Say hello" }]
+  }'
+```
+
+You should get a normal OpenAI-format response. Check `GET http://localhost:8765/status` to see key rotation state.
+
+---
+
 ## Integration Examples
 
 ### OpenClaw
