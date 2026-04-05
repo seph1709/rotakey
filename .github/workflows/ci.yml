@@ -53,14 +53,72 @@ jobs:
         run: docker build -t rotakey:ci .
       - name: Smoke test container
         run: |
+          # Build a minimal CI yaml — log goes to /app/data/ which is writable by the rotakey user
+          cat > /tmp/rotakey-ci.yaml << 'EOF'
+          server:
+            host: "127.0.0.1"
+            port: 8765
+            log_file: "data/rotakey.log"
+            log_level: "INFO"
+            log_format: "text"
+          http_client:
+            timeout_connect: 10.0
+            timeout_read: 120.0
+            timeout_write: 30.0
+            timeout_pool: 5.0
+            max_connections: 20
+            max_keepalive: 10
+          rate_limit:
+            state_file: "data/rotakey_state.json"
+            recovery_window: 300
+            backoff_schedule: [60, 120, 300, 600]
+            invalid_key_cooldown: 86400
+            keys_cache_ttl: 30
+          model_map: {}
+          providers:
+            openrouter:
+              base_url: "https://openrouter.ai/api"
+              prefix: "/openrouter"
+              key_header: "Authorization"
+              key_prefix: "Bearer "
+              model_fallback:
+                trigger_statuses: [429, 500, 502, 503, 404]
+                chain: []
+            anthropic:
+              base_url: "https://api.anthropic.com"
+              prefix: "/anthropic"
+              key_header: "x-api-key"
+              extra_headers:
+                anthropic-version: "2023-06-01"
+              model_fallback:
+                trigger_statuses: [429, 500, 502, 503]
+                chain: []
+            openai:
+              base_url: "https://api.openai.com"
+              prefix: "/openai"
+              key_header: "Authorization"
+              key_prefix: "Bearer "
+              model_fallback:
+                trigger_statuses: [429, 500, 502, 503]
+                chain: []
+            gemini:
+              base_url: "https://generativelanguage.googleapis.com"
+              prefix: "/gemini"
+              key_header: "x-goog-api-key"
+              model_fallback:
+                trigger_statuses: [429, 500, 502, 503]
+                chain: []
+          keys:
+            anthropic: []
+            openai: []
+            gemini: []
+            openrouter: []
+          EOF
           docker run -d --name rotakey-ci \
-            -v ${{ github.workspace }}/rotakey.yaml:/app/rotakey.yaml:ro \
+            -v /tmp/rotakey-ci.yaml:/app/rotakey.yaml:ro \
             rotakey:ci
           sleep 8
-          echo "=== container logs ==="
           docker logs rotakey-ci
-          echo "=== container status ==="
-          docker inspect rotakey-ci --format '{{.State.Status}} exit={{.State.ExitCode}}'
           docker exec rotakey-ci python3 -c \
             "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8765/health').read().decode())"
           docker stop rotakey-ci
