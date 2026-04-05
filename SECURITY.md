@@ -10,7 +10,7 @@
 
 **Please do not open a public GitHub issue for security vulnerabilities.**
 
-Report security issues by emailing: **josephmaynite99@gmail.com**
+Open a [GitHub Security Advisory](https://github.com/seph1709/rotakey/security/advisories/new) instead — it is private and only visible to you and the maintainer.
 
 Include:
 - Description of the vulnerability
