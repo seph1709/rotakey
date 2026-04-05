@@ -4,7 +4,7 @@
 
 <img width="769" height="236" alt="RotaKey banner" src="assets/banner.png" />
 
-**Smart API key rotation and model fallback proxy for OpenRouter, Anthropic, OpenAI, and Gemini.**
+**Smart API key rotation and model fallback proxy — battle-tested on OpenRouter, with built-in support for Anthropic, OpenAI, and Gemini.**
 
 [![CI](https://github.com/seph1709/rotakey/actions/workflows/ci.yml/badge.svg)](https://github.com/seph1709/rotakey/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
@@ -83,12 +83,14 @@ curl http://localhost:8765/status
 
 ## Supported Providers
 
-| Provider | Base URL | Auth Header |
-|---|---|---|
-| OpenRouter | `http://localhost:8765/openrouter/...` | `Authorization: Bearer` |
-| Anthropic | `http://localhost:8765/anthropic/...` | `x-api-key` |
-| OpenAI | `http://localhost:8765/openai/...` | `Authorization: Bearer` |
-| Gemini | `http://localhost:8765/gemini/...` | `x-goog-api-key` |
+| Provider | Base URL | Auth Header | Status |
+|---|---|---|---|
+| OpenRouter | `http://localhost:8765/openrouter/...` | `Authorization: Bearer` | Battle-tested |
+| Anthropic | `http://localhost:8765/anthropic/...` | `x-api-key` | Implemented, community testing welcome |
+| OpenAI | `http://localhost:8765/openai/...` | `Authorization: Bearer` | Implemented, community testing welcome |
+| Gemini | `http://localhost:8765/gemini/...` | `x-goog-api-key` | Implemented, community testing welcome |
+
+> OpenRouter is the primary tested provider. If you test another provider and it works (or doesn't), please open an issue or PR — feedback helps everyone.
 
 ---
 
