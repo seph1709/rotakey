@@ -53,13 +53,13 @@ jobs:
         run: docker build -t rotakey:ci .
       - name: Smoke test container
         run: |
-          # Start container with empty keys (no real API calls made)
+          # Start container (proxy binds 127.0.0.1 inside container by default)
           docker run -d --name rotakey-ci \
-            -p 8765:8765 \
             -v ${{ github.workspace }}/rotakey.yaml:/app/rotakey.yaml:ro \
             rotakey:ci
           # Wait for startup
           sleep 5
-          # Health check
-          curl -sf http://localhost:8765/health | grep '"ok"'
+          # Health check runs inside the container where 127.0.0.1 is reachable
+          docker exec rotakey-ci python3 -c \
+            "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8765/health').read().decode())"
           docker stop rotakey-ci
