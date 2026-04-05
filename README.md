@@ -26,7 +26,7 @@ Your app  →  http://localhost:8765/openrouter/v1/chat/completions
 ### Option A — Python
 
 ```bash
-git clone https://github.com/yourorg/rotakey
+git clone https://github.com/seph1709/rotakey
 cd rotakey
 
 # Install (Linux/macOS)
@@ -49,7 +49,7 @@ start.bat
 ### Option B — Docker (recommended for teams)
 
 ```bash
-git clone https://github.com/yourorg/rotakey
+git clone https://github.com/seph1709/rotakey
 cd rotakey
 
 # Copy and edit .env
