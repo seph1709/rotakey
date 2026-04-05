@@ -2,7 +2,7 @@
 
 # RotaKey
 
-<img width="769" height="236" alt="RotaKey banner" src="https://github.com/user-attachments/assets/2942899c-1de8-4e9b-81ce-aad71bfc77fb" />
+<img width="769" height="236" alt="RotaKey banner" src="assets/banner.png" />
 
 **Smart API key rotation and model fallback proxy for OpenRouter, Anthropic, OpenAI, and Gemini.**
 
