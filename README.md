@@ -47,6 +47,7 @@ git clone https://github.com/seph1709/rotakey
 cd rotakey
 
 # Linux/macOS
+chmod +x install.sh
 ./install.sh
 echo 'ROTAKEY_KEYS_OPENROUTER=sk-or-v1-your-key-here' >> .env
 ./start.sh
