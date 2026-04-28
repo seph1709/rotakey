@@ -50,7 +50,7 @@ cd rotakey
 chmod +x install.sh
 ./install.sh
 echo 'ROTAKEY_KEYS_OPENROUTER=sk-or-v1-your-key-here' >> .env
-chmod +x ./start.sh
+chmod +x start.sh
 ./start.sh
 ```
 
